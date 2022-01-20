@@ -145,6 +145,6 @@ vagrant@vagrant:~$
              ful, e.g. when implementing menu services.  Multiple -t options force tty allocation, even if ssh has no local tty.
 ```
 # 13
-reptyr -T PID
+Получилось перенести исполняемую программу с pts/1 на pts/0 только с `reptyr -T PID`
 # 14
 В отличие от `echo` команда `tee` читает данные stdin и передаёт в stdout или файл. `echo` только выводит на экран текст, а перенаправлением в файл отвечает shell. Поэтому `sudo echo string > /root/new_file` не сможет перенаправить stdout в файл, так как shell запущен не из под `sudo`. А `echo string | sudo tee /root/new_file` принимает строчку от `echo` на вход и в привилегированном режиме `tee` может перенаправить выход в /root/new_file 
