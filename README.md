@@ -3,10 +3,12 @@ cd is a shell builtin
 # 2
 `grep -c <some_string> <some_file> `
 # 3
-С помощью `>pstree -p` находим systemd(1), то етсь процесс systemd имеет PID 1
+С помощью `pstree -p` находим systemd(1), то етсь процесс systemd имеет PID 1
 # 4
+Перенаправляем stderr с /dev/pts/0 на /dev/pts/1  
 `ls -zzzzz 2>/dev/pts/1`
 # 5
+Можно создать файл 1.txt с набором слов, затем передать на вход (stdin) grep файл 1.txt с поиском по слову test (таких строк две), затем вывод (stdout) в файл 2.txt 
 ```
 vagrant@vagrant:~$ cat 1.txt
 23
