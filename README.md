@@ -29,7 +29,7 @@ test2342
 test
 ```
 # 6
-Да
+Да. Через vagrant ssh заходим в PTS, а локально через virtualbox - получаем доступ к tty. Пользуясь примером из 4 задания получаем вывод stderr из pts/0 в tty1
 ```
 vagrant@vagrant:~$ tty
 /dev/pts/0
@@ -50,6 +50,7 @@ vagrant@vagrant:~$ echo netology > /proc/$$/fd/6
 bash: /proc/2455/fd/6: No such file or directory
 vagrant@vagrant:~$
 # 8
+
 # 9
 ```
 vagrant@vagrant:~$ cat /proc/$$/environ
