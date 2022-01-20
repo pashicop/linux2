@@ -3,10 +3,9 @@ cd is a shell builtin
 # 2
 `grep -c <some_string> <some_file> `
 # 3
-`>pstree -p 
-systemd(1)`
+С помощью `>pstree -p` находим systemd(1), то етсь процесс systemd имеет PID 1
 # 4
-ls -yz 2>/dev/pts/1
+`ls -zzzzz 2>/dev/pts/1`
 # 5
 ```
 vagrant@vagrant:~$ cat 1.txt
@@ -28,6 +27,15 @@ test2342
 test
 ```
 # 6
+Да
+```
+vagrant@vagrant:~$ tty
+/dev/pts/0
+vagrant@vagrant:~$ ls -zzzzz 2>/dev/tty1
+```
+![image](https://user-images.githubusercontent.com/97126500/150359451-e076c2bf-84f0-4706-bee7-6dac2cc5973d.png)
+
+
 # 7
 `bash 5>&1` перенаправит поток 5 на stdout 
 ```
@@ -47,7 +55,7 @@ SHELL=/bin/bashPWD=/home/vagrantLOGNAME=vagrantXDG_SESSION_TYPE=ttyMOTD_SHOWN=pa
 ```
 Можно увидеть командой export
 ```
- cat /pexport
+export
 declare -x DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
 declare -x HOME="/home/vagrant"
 declare -x LANG="en_US.UTF-8"
@@ -74,10 +82,13 @@ declare -x XDG_SESSION_TYPE="tty"
 vagrant@vagrant:~$
 ```
 # 10
- /proc/[pid]/cmdline
+```
+/proc/[pid]/cmdline
               This read-only file holds the complete command line for the process, unless the process is a zombie.  In the latter case, there is nothing in  this
               file:  that is, a read on this file will return 0 characters.  The command-line arguments appear in this file as a set of strings separated by null
               bytes ('\0'), with a further null byte after the last string.
+```
+```
 /proc/[pid]/exe
               Under Linux 2.2 and later, this file is a symbolic link containing the actual pathname of the executed command.  This symbolic link can be derefer‐
               enced normally; attempting to open it will open the executable.  You can even type /proc/[pid]/exe to run another copy of the same executable  that
@@ -96,6 +107,7 @@ vagrant@vagrant:~$
               For example, [0301]:1502 would be inode 1502 on device major 03 (IDE, MFM, etc. drives) minor 01 (first partition on the first drive).
 
               find(1) with the -inum option can be used to locate the file.
+```
 # 11
 SSE 4.2
 ```
