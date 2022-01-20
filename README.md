@@ -1,7 +1,11 @@
 # 1
+`cd` встроенная в shell команда. Реализует базовый функционал shell с возможностью изменять внутреннее состояние оболочки ($PWD). Могла бы быть внешней, например, /bin/cd. Но внешняя программа не может влиять на внутреннее состояние оболочки. 
+```
+vagrant@vagrant:~$ type cd
 cd is a shell builtin
+```
 # 2
-`grep -c <some_string> <some_file> `
+`grep -c <some_string> <some_file>`
 # 3
 С помощью `pstree -p` находим systemd(1), то етсь процесс systemd имеет PID 1
 # 4
@@ -37,7 +41,6 @@ vagrant@vagrant:~$ ls -zzzzz 2>/dev/tty1
 ```
 ![image](https://user-images.githubusercontent.com/97126500/150359451-e076c2bf-84f0-4706-bee7-6dac2cc5973d.png)
 
-
 # 7
 `bash 5>&1` перенаправит поток 5 на stdout 
 ```
@@ -50,7 +53,31 @@ vagrant@vagrant:~$ echo netology > /proc/$$/fd/6
 bash: /proc/2455/fd/6: No such file or directory
 vagrant@vagrant:~$
 # 8
+Используем промежуточный поток №5. Тогда при stdout останется в pts, а stderr передаётся через pipe `|`
+```
+vagrant@vagrant:~$ cat cat2.txt
 
+vagrant@vagrant:~$ ll 5>&1 1>&2 2>&5|cat >cat2.txt
+total 44
+drwxr-xr-x 5 vagrant vagrant 4096 Jan 20 20:15 ./
+drwxr-xr-x 3 root    root    4096 Dec 19 19:42 ../
+drwxrwxr-x 2 vagrant vagrant 4096 Jan 20 19:55 1/
+-rw-r--r-- 1 vagrant vagrant  220 Feb 25  2020 .bash_logout
+-rw-r--r-- 1 vagrant vagrant 3771 Feb 25  2020 .bashrc
+drwx------ 2 vagrant vagrant 4096 Dec 19 19:42 .cache/
+-rw-rw-r-- 1 vagrant vagrant    0 Jan 20 20:16 cat2.txt
+-rw-rw-r-- 1 vagrant vagrant   54 Jan 20 20:15 cat.txt
+-rw-r--r-- 1 vagrant vagrant  807 Feb 25  2020 .profile
+drwx------ 2 vagrant root    4096 Jan 20 19:42 .ssh/
+-rw-r--r-- 1 vagrant vagrant    0 Dec 19 19:42 .sudo_as_admin_successful
+-rw-r--r-- 1 vagrant vagrant    6 Dec 19 19:42 .vbox_version
+-rw-r--r-- 1 root    root     180 Dec 19 19:44 .wget-hsts
+vagrant@vagrant:~$ cat cat2.txt
+vagrant@vagrant:~$ ll egdfgd 5>&1 1>&2 2>&5|cat >cat2.txt
+vagrant@vagrant:~$ cat cat2.txt
+ls: cannot access 'egdfgd': No such file or directory
+vagrant@vagrant:~$
+```
 # 9
 ```
 vagrant@vagrant:~$ cat /proc/$$/environ
@@ -87,32 +114,14 @@ vagrant@vagrant:~$
 # 10
 ```
 /proc/[pid]/cmdline
-              This read-only file holds the complete command line for the process, unless the process is a zombie.  In the latter case, there is nothing in  this
-              file:  that is, a read on this file will return 0 characters.  The command-line arguments appear in this file as a set of strings separated by null
-              bytes ('\0'), with a further null byte after the last string.
+Доступный только для чтения файл содержит полную командную строку для процесса, если этот процесс не является зомби. В последнем случае в этом файле ничего нет: то есть чтение этого файла вернет 0 символов. Аргументы командной строки отображаются в этом файле как набор строк, разделенных нулевыми байтами ('\0'), с дополнительным нулевым байтом после последней строки.
 ```
 ```
 /proc/[pid]/exe
-              Under Linux 2.2 and later, this file is a symbolic link containing the actual pathname of the executed command.  This symbolic link can be derefer‐
-              enced normally; attempting to open it will open the executable.  You can even type /proc/[pid]/exe to run another copy of the same executable  that
-              is  being  run by process [pid].  If the pathname has been unlinked, the symbolic link will contain the string '(deleted)' appended to the original
-              pathname.  In a multithreaded process, the contents of this symbolic link are not available if the main thread has already terminated (typically by
-              calling pthread_exit(3)).
-
-              Permission  to  dereference  or  read  (readlink(2))  this  symbolic  link  is governed by a ptrace access mode PTRACE_MODE_READ_FSCREDS check; see
-              ptrace(2).
-
-              Under Linux 2.0 and earlier, /proc/[pid]/exe is a pointer to the binary which was executed, and appears as a symbolic link.  A readlink(2) call  on
-              this file under Linux 2.0 returns a string in the format:
-
-                  [device]:inode
-
-              For example, [0301]:1502 would be inode 1502 on device major 03 (IDE, MFM, etc. drives) minor 01 (first partition on the first drive).
-
-              find(1) with the -inum option can be used to locate the file.
+Файл представляет собой символическую ссылку, содержащую фактический путь к выполняемой команде.
 ```
 # 11
-SSE 4.2
+Версия SSE 4.2
 ```
 vagrant@vagrant:~$ grep sse /proc/cpuinfo
 flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid tsc_known_freq pni ssse3 cx16 pcid sse4_1 sse4_2 hypervisor lahf_lm invpcid_single pti fsgsbase invpcid md_clear flush_l1d arch_capabilities
@@ -129,9 +138,13 @@ vagrant@localhost's password:
 /dev/pts/3
 Connection to localhost closed.
 vagrant@vagrant:~$
- -t      Force pseudo-terminal allocation.  This can be used to execute arbitrary screen-based programs on a remote machine, which can be very use‐
+```
+Это происходит потому что автоматически не выдаётся pts при запуске команды через `ssh`. Ключ `-t` заставляет принудительно выдать pts
+```
+-t      Force pseudo-terminal allocation.  This can be used to execute arbitrary screen-based programs on a remote machine, which can be very use‐
              ful, e.g. when implementing menu services.  Multiple -t options force tty allocation, even if ssh has no local tty.
-
 ```
 # 13
 reptyr -T PID
+# 14
+В отличие от `echo` команда `tee` читает данные stdin и передаёт в stdout или файл. `echo` только выводит на экран текст, а перенаправлением в файл отвечает shell. Поэтому `sudo echo string > /root/new_file` не сможет перенаправить stdout в файл, так как shell запущен не из под `sudo`. А `echo string | sudo tee /root/new_file` принимает строчку от `echo` на вход и в привилегированном режиме `tee` может перенаправить выход в /root/new_file 
